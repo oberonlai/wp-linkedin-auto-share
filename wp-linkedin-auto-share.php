@@ -174,8 +174,7 @@ final class WP_LinkedIn_Auto_Share {
 		}
 
 		// 儲存設定.
-		$wplas_save = ( isset( $_POST['wplas_save'] ) ) ? sanitize_text_field( wp_unslash( $_POST['wplas_save'] ) ) : '';
-		if ( $wplas_save && check_admin_referer( 'wplas_settings' ) ) {
+		if ( isset( $_POST['wplas_save'] ) && check_admin_referer( 'wplas_settings' ) ) {
 			$client_id_raw     = ( isset( $_POST['wplas_client_id'] ) ) ? sanitize_text_field( wp_unslash( $_POST['wplas_client_id'] ) ) : '';
 			$client_secret_raw = ( isset( $_POST['wplas_client_secret'] ) ) ? sanitize_text_field( wp_unslash( $_POST['wplas_client_secret'] ) ) : '';
 			$post_template_raw = ( isset( $_POST['wplas_post_template'] ) ) ? sanitize_textarea_field( wp_unslash( $_POST['wplas_post_template'] ) ) : '';
