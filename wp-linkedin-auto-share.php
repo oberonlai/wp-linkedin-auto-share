@@ -5,10 +5,11 @@
  * Description:  WordPress 文章發布後自動同步到 LinkedIn，支援個人帳號與公司頁面。
  * Version:      1.0.0
  * Requires PHP: 8.0
- * Author:       Suspended Suspended
+ * Author:       Codotx
+ * Author URI:   https://codotx.com
  * License:      GPL-2.0-or-later
  * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:  wplas
+ * Text Domain:  cdx
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

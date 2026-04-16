@@ -39,5 +39,5 @@ WP LinkedIn Auto Share (`wplas`) 是一個 WordPress 外掛，在文章發布時
 
 此外掛運行在本地 WordPress 環境中，路徑為 `/Users/oberonlai/Sites/lin/`。無建置步驟、無測試、無 npm/composer 依賴。直接編輯 PHP 檔案即可。
 
-Text Domain: `wplas`
+Text Domain: `cdx`
 Requires PHP: 8.0
