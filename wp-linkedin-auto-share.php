@@ -45,7 +45,7 @@ final class WP_LinkedIn_Auto_Share {
 		add_action( 'admin_init', array( $this, 'handle_oauth_callback' ) );
 		add_action( 'add_meta_boxes', array( $this, 'register_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save_meta_box' ) );
-		add_action( 'transition_post_status', array( $this, 'on_publish' ), 10, 3 );
+		add_action( 'wp_after_insert_post', array( $this, 'on_publish' ), 10, 4 );
 		add_action( 'admin_notices', array( $this, 'show_share_error' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
 	}
@@ -377,26 +377,21 @@ final class WP_LinkedIn_Auto_Share {
 	// 發布觸發
 	// ══════════════════════════════════════════════════════════════════════════
 
-	public function on_publish( string $new_status, string $old_status, WP_Post $post ): void {
-		// 只在 publish 那一刻觸發，避免更新已發布文章時重複觸發
-		if ( 'publish' !== $new_status || 'publish' === $old_status ) {
+	public function on_publish( int $post_id, WP_Post $post, bool $update, ?WP_Post $post_before ): void {
+		// 只在首次發布時觸發（之前不是 publish，現在是 publish）.
+		if ( 'publish' !== $post->post_status ) {
+			return;
+		}
+		if ( $post_before && 'publish' === $post_before->post_status ) {
 			return;
 		}
 		if ( 'post' !== $post->post_type ) {
 			return;
 		}
 
-		// 檢查是否該同步.
-		// transition_post_status 比 save_post 早觸發，meta 可能尚未寫入，因此也檢查 $_POST.
+		// wp_after_insert_post 在所有 meta 寫入後觸發，直接讀取即可.
 		$auto_all     = get_option( 'wplas_auto_all_posts', '0' );
 		$should_share = get_post_meta( $post->ID, '_wplas_share', true );
-
-		if ( '' === $should_share ) {
-			$nonce = ( isset( $_POST['wplas_nonce'] ) ) ? sanitize_text_field( wp_unslash( $_POST['wplas_nonce'] ) ) : '';
-			if ( $nonce && wp_verify_nonce( $nonce, 'wplas_meta_box' ) ) {
-				$should_share = isset( $_POST['wplas_share'] ) ? '1' : '0';
-			}
-		}
 
 		$do_share = ( '1' === $auto_all ) || ( '1' === $should_share );
 		if ( ! $do_share ) {
